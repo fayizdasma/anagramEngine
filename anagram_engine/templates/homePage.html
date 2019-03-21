@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome to Anagram Engine</title>
+</head>
+<body>
+{% if user %}
+<div id="header">
+    <p>Hello {{ user.email() }} welcome to the application</p>
+    <p>You can <a href='{{ url }}'>{{ url_string }}</a> here</p>
+    <br/>
+    {% else %}
+    <p>Hello guest!</p>
+    <p>Please <a href='{{ url }}'>{{ url_string }}</a> to continue</p>
+</div>
+{% endif %}
+</body>
+</html>
