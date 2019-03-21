@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Word</title>
+</head>
+<body>
+<form action="/add" method="post">
+    <h1>Add Word</h1>
+    <table>
+        <tr>
+            <td> Word:</td>
+            <td><input name="word_name" required type="text" value=""/></td>
+        </tr>
+    </table>
+    <br/>
+    <!--display error message-->
+    {% if error_message %}
+    <p>{{ error_message }} </p>
+    <br/>
+    {% endif %}
+    <input name="button" type="submit" value="Add"/>
+</form>
+<form action="/" method="get">
+    <input name="button" type="submit" value="Cancel"/>
+</form>
+</body>
+</html>

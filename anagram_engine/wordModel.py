@@ -5,3 +5,4 @@ class WordModel(ndb.Model):
     wordList = ndb.StringProperty()
     wordCount = ndb.IntegerProperty()
     letterCount = ndb.IntegerProperty()
+    userId = ndb.StringProperty()

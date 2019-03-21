@@ -5,6 +5,7 @@ from google.appengine.ext import ndb
 import os
 
 from userModel import UserModel
+from addWord import AddWord
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -31,7 +32,7 @@ class MainPage(webapp2.RequestHandler):
                 myuser.user = user.email()
                 myuser.put()
 
-            x = generate_key('car')
+            # x = generate_key('car')
 
         else:
             response_url = users.create_login_url(self.request.uri)
@@ -47,9 +48,4 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(main_template.render(template_values))
 
 
-# sort all letters of the word into lexicographical order
-def generate_key(param):
-    return sorted(param)
-
-
-app = webapp2.WSGIApplication([('/', MainPage)], debug=True)
+app = webapp2.WSGIApplication([('/', MainPage), ('/add', AddWord)], debug=True)
