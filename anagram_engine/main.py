@@ -31,6 +31,8 @@ class MainPage(webapp2.RequestHandler):
                 myuser.user = user.email()
                 myuser.put()
 
+            x = generate_key('car')
+
         else:
             response_url = users.create_login_url(self.request.uri)
             response_url_string = 'login'
@@ -43,6 +45,11 @@ class MainPage(webapp2.RequestHandler):
         }
         main_template = JINJA_ENVIRONMENT.get_template('/templates/homePage.html')
         self.response.write(main_template.render(template_values))
+
+
+# sort all letters of the word into lexicographical order
+def generate_key(param):
+    return sorted(param)
 
 
 app = webapp2.WSGIApplication([('/', MainPage)], debug=True)
