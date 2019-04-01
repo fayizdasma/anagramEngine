@@ -22,20 +22,31 @@ class AddWord(webapp2.RequestHandler):
     def post(self):
         self.response.headers['Content-Type'] = 'text/html'
         if self.request.get('button') == 'Add':
-            word = self.request.get('word_name')
-            print '------------'
-            print word
-            # word_key = ndb.Key('WordModel', word)
-            # addWord = word_key.get()
+            word = self.request.get('word_name').upper()
+            # print '------------'
+            # print word
+            sortedWord = generate_key(word)
+            addWord = WordModel(id=sortedWord)
+            word_key = ndb.Key('WordModel', sortedWord)
+            oldWord = word_key.get()
+            isWordAlreadyThere = False
 
-            addWord = WordModel(id=generate_key(word))
-            addWord.wordList = self.request.get('word_name')
-            addWord.wordCount = len(word)
-            addWord.letterCount = len(word)
-            addWord.userId = users.get_current_user().email()
+            if oldWord != None:
+                if word not in oldWord.wordList:
+                    oldWord.wordList.append(word)
+                    addWord.wordList = oldWord.wordList
+                else:
+                    self.response.out.write('''<script>alert('This word already added!');</script>''')
+                    isWordAlreadyThere = True
+            else:
+                addWord.wordList = [word]
 
-            addWord.put()
-            self.redirect('/')
+            if not isWordAlreadyThere:
+                addWord.wordCount = len(addWord.wordList)
+                addWord.letterCount = len(word)
+                addWord.userId = users.get_current_user().email()
+                addWord.put()
+                self.redirect('/')
 
         elif self.request.get('button') == 'Cancel':
             self.redirect('/')

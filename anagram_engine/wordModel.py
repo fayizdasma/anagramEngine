@@ -2,7 +2,7 @@ from google.appengine.ext import ndb
 
 
 class WordModel(ndb.Model):
-    wordList = ndb.StringProperty()
+    wordList = ndb.StringProperty(repeated=True)
     wordCount = ndb.IntegerProperty()
     letterCount = ndb.IntegerProperty()
     userId = ndb.StringProperty()
