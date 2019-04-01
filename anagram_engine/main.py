@@ -35,7 +35,19 @@ class MainPage(webapp2.RequestHandler):
                 myuser.user = user.email()
                 myuser.put()
 
-            # x = generate_key('car')
+            # get all
+            anagram_all = WordModel.query(WordModel.userId == user.email()).fetch()
+            wordCount = 0
+            anagramCount = 0
+            if anagram_all != None:
+                # print anagram_all
+                anagramCount = len(anagram_all)
+                for x in anagram_all:
+                    wordCount = wordCount + x.wordCount
+                print 'total word count'
+                print wordCount
+                print 'unique count'
+                print anagramCount
 
         else:
             response_url = users.create_login_url(self.request.uri)
@@ -56,7 +68,9 @@ class MainPage(webapp2.RequestHandler):
             'url_string': response_url_string,
             'user': user,
             'search_result': search_result,
-            'isSearchClicked': isSearchClicked
+            'isSearchClicked': isSearchClicked,
+            'anagram_count': anagramCount,
+            'word_count': wordCount
         }
         main_template = JINJA_ENVIRONMENT.get_template('/templates/homePage.html')
         self.response.write(main_template.render(template_values))

@@ -13,10 +13,18 @@
     <h1>Add Word</h1><br/><a href="/add">here</a>
     <br/>
     <h1>Search</h1>
+    {% if anagram_count %}
+    <p>Unique Anagram Count: {{ anagram_count }}</p>
+    {% endif %}
+    {% if word_count %}
+    <p>Total Word Count: {{ word_count }}</p>
+    {% endif %}
     <form action="/" method="get">
         <td><input name="word_name" pattern="[A-Za-z]+" required type="text" value=""/>
         <td><input name="button" type="submit" value="Search"/>
     </form>
+
+
     {% if search_result %}
     <br/>
     <table>
