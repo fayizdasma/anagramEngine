@@ -14,9 +14,30 @@
     <br/>
     <h1>Search</h1>
     <form action="/" method="get">
-        <td><input name="word_name" pattern="[A-Za-z]" required type="text" value=""/>
+        <td><input name="word_name" pattern="[A-Za-z]+" required type="text" value=""/>
         <td><input name="button" type="submit" value="Search"/>
     </form>
+    {% if search_result %}
+    <br/>
+    <table>
+        <tr>
+            <th>Sl. No</th>
+            <th>Word</th>
+        </tr>
+        {% for j in search_result %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ j}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    {% if isSearchClicked %}
+    <p>Not found</p>
+    {% endif %}
+    {% endif %}
+
+
     {% else %}
     <p>Hello guest!</p>
     <p>Please <a href='{{ url }}'>{{ url_string }}</a> to continue</p>
