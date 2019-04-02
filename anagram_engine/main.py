@@ -6,7 +6,7 @@ import os
 
 from userModel import UserModel
 from wordModel import WordModel
-from addWord import AddWord
+from addWord import AddWord, add_to_database, generate_key
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -23,6 +23,8 @@ class MainPage(webapp2.RequestHandler):
         response_url = ''
         response_url_string = ''
         user = users.get_current_user()
+        wordCount = 0
+        anagramCount = 0
         if user:
             response_url = users.create_logout_url(self.request.uri)
             response_url_string = 'logout'
@@ -35,10 +37,9 @@ class MainPage(webapp2.RequestHandler):
                 myuser.user = user.email()
                 myuser.put()
 
-            # get all
+            # get total anagram count
             anagram_all = WordModel.query(WordModel.userId == user.email()).fetch()
-            wordCount = 0
-            anagramCount = 0
+
             if anagram_all != None:
                 # print anagram_all
                 anagramCount = len(anagram_all)
@@ -56,11 +57,26 @@ class MainPage(webapp2.RequestHandler):
         # when search button is clicked
         if self.request.get('button') == 'Search':
             isSearchClicked = True
-            searchWord = self.request.get('word_name')
+            searchWord = self.request.get('word_name').upper()
             sortedWord = generate_key(searchWord)
-            anagram = ndb.Key(WordModel, sortedWord).get()
+            anagram_key = ndb.Key(WordModel, sortedWord)
+            anagram = WordModel.query(ndb.AND(WordModel.userId == user.email(), WordModel.key == anagram_key)).fetch()
+            print anagram
             if anagram != None:
-                search_result = anagram.wordList
+                search_result = anagram
+
+        # when upload button is clicked, read file and populate user dictionary
+        if self.request.get('button') == 'Upload':
+            uploadFile = self.request.get('wordListFile')
+            if uploadFile != None:
+                os_directory = os.path.dirname(__file__)
+                file = open(os.path.join(os_directory, uploadFile), "r")
+                print file.readline()
+                for x in file:
+                    if x != None:
+                        isAlreadyThere = add_to_database(x.upper())
+                file.close()
+                self.response.out.write('''<script>alert('Upload wordlist to database complete');</script>''')
 
         # pass values to the html page
         template_values = {
@@ -74,15 +90,6 @@ class MainPage(webapp2.RequestHandler):
         }
         main_template = JINJA_ENVIRONMENT.get_template('/templates/homePage.html')
         self.response.write(main_template.render(template_values))
-
-
-# sort all letters of the word into lexicographical order
-def generate_key(param):
-    sorted_list = sorted(param)
-    sorted_string = ''
-    for x in sorted_list:
-        sorted_string = sorted_string + x
-    return sorted_string
 
 
 app = webapp2.WSGIApplication([('/', MainPage), ('/add', AddWord)], debug=True)

@@ -25,27 +25,10 @@ class AddWord(webapp2.RequestHandler):
             word = self.request.get('word_name').upper()
             # print '------------'
             # print word
-            sortedWord = generate_key(word)
-            addWord = WordModel(id=sortedWord)
-            word_key = ndb.Key('WordModel', sortedWord)
-            oldWord = word_key.get()
-            isWordAlreadyThere = False
-
-            if oldWord != None:
-                if word not in oldWord.wordList:
-                    oldWord.wordList.append(word)
-                    addWord.wordList = oldWord.wordList
-                else:
-                    self.response.out.write('''<script>alert('This word already added!');</script>''')
-                    isWordAlreadyThere = True
+            isAlreadyThere = add_to_database(word)
+            if isAlreadyThere:
+                self.response.out.write('''<script>alert('This word already added!');</script>''')
             else:
-                addWord.wordList = [word]
-
-            if not isWordAlreadyThere:
-                addWord.wordCount = len(addWord.wordList)
-                addWord.letterCount = len(word)
-                addWord.userId = users.get_current_user().email()
-                addWord.put()
                 self.redirect('/')
 
         elif self.request.get('button') == 'Cancel':
@@ -59,3 +42,29 @@ def generate_key(param):
     for x in sorted_list:
         sorted_string = sorted_string + x
     return sorted_string
+
+
+# add to db and return status
+def add_to_database(word):
+    sortedWord = generate_key(word)
+    addWord = WordModel(id=sortedWord)
+    word_key = ndb.Key('WordModel', sortedWord)
+    oldWord = word_key.get()
+    isWordAlreadyThere = False
+
+    if oldWord != None:
+        if word not in oldWord.wordList:
+            oldWord.wordList.append(word)
+            addWord.wordList = oldWord.wordList
+        else:
+            isWordAlreadyThere = True
+    else:
+        addWord.wordList = [word]
+
+    if not isWordAlreadyThere:
+        addWord.wordCount = len(addWord.wordList)
+        addWord.letterCount = len(word)
+        addWord.userId = users.get_current_user().email()
+        addWord.put()
+
+    return isWordAlreadyThere

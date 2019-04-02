@@ -7,7 +7,7 @@
 <body>
 {% if user %}
 <div id="header">
-    <p>Hello {{ user.email() }} welcome to the application</p>
+    <p>Hello {{ user.email() }}, welcome to the application</p>
     <p>You can <a href='{{ url }}'>{{ url_string }}</a> here</p>
     <br/>
     <h1>Add Word</h1><br/><a href="/add">here</a>
@@ -23,8 +23,6 @@
         <td><input name="word_name" pattern="[A-Za-z]+" required type="text" value=""/>
         <td><input name="button" type="submit" value="Search"/>
     </form>
-
-
     {% if search_result %}
     <br/>
     <table>
@@ -44,7 +42,12 @@
     <p>Not found</p>
     {% endif %}
     {% endif %}
-
+    <br/>
+    <h1>Upload File</h1>
+    <form action="/">
+        Select a wordlist file: <input accept=".txt" name="wordListFile" type="file"><br><br>
+        <input name="button" type="submit" value="Upload">
+    </form>
 
     {% else %}
     <p>Hello guest!</p>
