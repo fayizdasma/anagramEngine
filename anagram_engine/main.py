@@ -31,7 +31,7 @@ class MainPage(webapp2.RequestHandler):
             response_url = users.create_logout_url(self.request.uri)
             response_url_string = 'logout'
 
-            myuser_key = ndb.Key('UserModel', user.user_id())
+            myuser_key = ndb.Key(UserModel, user.user_id())
             myuser = myuser_key.get()
 
             if myuser == None:
@@ -44,9 +44,9 @@ class MainPage(webapp2.RequestHandler):
             count_data = CountModel.query(CountModel.key == count_data_key).fetch()
 
             if count_data != None:
-                print count_data
-                wordCount = count_data[0].totalcount
-                anagramCount = count_data[0].uniqueCount
+                if len(count_data) > 0:
+                    wordCount = count_data[0].totalcount
+                    anagramCount = count_data[0].uniqueCount
 
         else:
             response_url = users.create_login_url(self.request.uri)
@@ -55,11 +55,13 @@ class MainPage(webapp2.RequestHandler):
         # when search button is clicked
         if self.request.get('button') == 'Search':
             isSearchClicked = True
+            userEmail = ''
             searchWord = self.request.get('word_name').upper()
             sortedWord = generate_key(searchWord)
-            userEmail = users.get_current_user().email()
+            if users.get_current_user() != None:
+                userEmail = users.get_current_user().email()
             anagram_key = ndb.Key(WordModel, sortedWord + ',' + userEmail)
-            anagram = WordModel.query(ndb.AND(WordModel.userId == user.email(), WordModel.key == anagram_key)).fetch()
+            anagram = WordModel.query(WordModel.key == anagram_key).fetch()
             if anagram != None:
                 if len(anagram) > 0:
                     search_result = anagram[0].wordList
@@ -73,7 +75,7 @@ class MainPage(webapp2.RequestHandler):
                 print file.readline()
                 for x in file:
                     if x != None:
-                        x = x.strip('\n')
+                        x = x.rstrip()
                         isAlreadyThere = add_to_database(x.upper())
                 file.close()
                 self.response.out.write('''<script>alert('Upload wordlist to database complete');</script>''')

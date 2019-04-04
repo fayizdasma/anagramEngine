@@ -29,7 +29,7 @@
     <table>
         <tr>
             <th>Sl. No</th>
-            <th>Word</th>
+            <th>Anagram</th>
         </tr>
         {% for j in search_result %}
         <tr>
@@ -46,10 +46,13 @@
     <br/>
     <h1>Upload File</h1>
     <form action="/">
-        Select a wordlist file: <input accept=".txt" name="wordListFile" type="file"><br><br>
-        <input name="button" type="submit" value="Upload">
+        Select a wordlist file: <input accept=".txt" name="wordListFile" required type="file"><br><br>
+        <input name="button" required type="submit" value="Upload">
     </form>
-    <h1>Sub-Anagram Query </h1><br/><a href="/subAnagram">here</a>
+    <br/>
+    <h1>Sub-Anagram Query</h1>
+    <br/>
+    <a href="/subAnagram">Go to Sub-Anagram query page</a>
     {% else %}
     <p>Hello guest!</p>
     <p>Please <a href='{{ url }}'>{{ url_string }}</a> to continue</p>

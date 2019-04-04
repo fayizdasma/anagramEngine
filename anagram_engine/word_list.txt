@@ -7,3 +7,5 @@ tar
 car
 listen
 silent
+age
+rage

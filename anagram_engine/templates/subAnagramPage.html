@@ -15,7 +15,7 @@
 <table>
     <tr>
         <th>Sl. No</th>
-        <th>Word</th>
+        <th>Anagram</th>
     </tr>
     {% for j in search_result %}
     <tr>
@@ -24,7 +24,26 @@
     </tr>
     {% endfor %}
 </table>
+
 <h2>Sub-Anagrams</h2>
+{% if sub_anagram_result %}
+<br/>
+<table>
+    <tr>
+        <th>Sl. No</th>
+        <th>Anagram</th>
+    </tr>
+    {% for j in sub_anagram_result %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ j}}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Sub anagrams not found!</p>
+{% endif %}
+
 {% else %}
 {% if isSearchClicked %}
 <p>Not found</p>
