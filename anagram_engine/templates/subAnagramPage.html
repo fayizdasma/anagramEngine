@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sub Anagram</title>
+</head>
+<body>
+<h1>Search Sub Anagram</h1>
+<form action="/subAnagram" method="get">
+    <td><input name="word_name" pattern="[A-Za-z]+" required type="text" value=""/>
+    <td><input name="button" type="submit" value="Search"/>
+</form>
+{% if search_result %}
+<br/>
+<table>
+    <tr>
+        <th>Sl. No</th>
+        <th>Word</th>
+    </tr>
+    {% for j in search_result %}
+    <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ j}}</td>
+    </tr>
+    {% endfor %}
+</table>
+<h2>Sub-Anagrams</h2>
+{% else %}
+{% if isSearchClicked %}
+<p>Not found</p>
+{% endif %}
+{% endif %}
+<br/>
+</body>
+</html>

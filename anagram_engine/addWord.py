@@ -3,6 +3,7 @@ import jinja2
 from google.appengine.ext import ndb
 from google.appengine.api import users
 
+from countModel import CountModel
 from wordModel import WordModel
 import os
 
@@ -27,7 +28,7 @@ class AddWord(webapp2.RequestHandler):
             # print word
             isAlreadyThere = add_to_database(word)
             if isAlreadyThere:
-                self.response.out.write('''<script>alert('This word already added!');</script>''')
+                self.response.out.write('''<script>alert('This word is already added!');</script>''')
             else:
                 self.redirect('/')
 
@@ -47,24 +48,42 @@ def generate_key(param):
 # add to db and return status
 def add_to_database(word):
     sortedWord = generate_key(word)
-    addWord = WordModel(id=sortedWord)
-    word_key = ndb.Key('WordModel', sortedWord)
+    userEmail = users.get_current_user().email()
+    addWord = WordModel(id=sortedWord + ',' + userEmail)
+    countModel = CountModel(id=userEmail)
+    word_key = ndb.Key(WordModel, sortedWord + ',' + userEmail)
     oldWord = word_key.get()
     isWordAlreadyThere = False
+
+    count_key = ndb.Key(CountModel, users.get_current_user().email())
+    countData = count_key.get()
 
     if oldWord != None:
         if word not in oldWord.wordList:
             oldWord.wordList.append(word)
             addWord.wordList = oldWord.wordList
+            countModel.totalcount = countData.totalcount + 1
+            countModel.uniqueCount = countData.uniqueCount
         else:
             isWordAlreadyThere = True
+            if countData != None:
+                if countData.uniqueCount != None:
+                    countModel.uniqueCount = countData.uniqueCount + 1
+
     else:
         addWord.wordList = [word]
+        if countData != None:
+            countModel.uniqueCount = countData.uniqueCount + 1
+            countModel.totalcount = countData.totalcount + 1
+        else:
+            countModel.uniqueCount = 1
+            countModel.totalcount = 1
 
     if not isWordAlreadyThere:
         addWord.wordCount = len(addWord.wordList)
         addWord.letterCount = len(word)
         addWord.userId = users.get_current_user().email()
         addWord.put()
+        countModel.put()
 
     return isWordAlreadyThere

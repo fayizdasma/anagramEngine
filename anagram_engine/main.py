@@ -4,8 +4,10 @@ from google.appengine.api import users
 from google.appengine.ext import ndb
 import os
 
+from countModel import CountModel
 from userModel import UserModel
 from wordModel import WordModel
+from subAnagram import SubAnagram
 from addWord import AddWord, add_to_database, generate_key
 
 JINJA_ENVIRONMENT = jinja2.Environment(
@@ -38,17 +40,13 @@ class MainPage(webapp2.RequestHandler):
                 myuser.put()
 
             # get total anagram count
-            anagram_all = WordModel.query(WordModel.userId == user.email()).fetch()
+            count_data_key = ndb.Key(CountModel, user.email())
+            count_data = CountModel.query(CountModel.key == count_data_key).fetch()
 
-            if anagram_all != None:
-                # print anagram_all
-                anagramCount = len(anagram_all)
-                for x in anagram_all:
-                    wordCount = wordCount + x.wordCount
-                print 'total word count'
-                print wordCount
-                print 'unique count'
-                print anagramCount
+            if count_data != None:
+                print count_data
+                wordCount = count_data[0].totalcount
+                anagramCount = count_data[0].uniqueCount
 
         else:
             response_url = users.create_login_url(self.request.uri)
@@ -59,11 +57,12 @@ class MainPage(webapp2.RequestHandler):
             isSearchClicked = True
             searchWord = self.request.get('word_name').upper()
             sortedWord = generate_key(searchWord)
-            anagram_key = ndb.Key(WordModel, sortedWord)
+            userEmail = users.get_current_user().email()
+            anagram_key = ndb.Key(WordModel, sortedWord + ',' + userEmail)
             anagram = WordModel.query(ndb.AND(WordModel.userId == user.email(), WordModel.key == anagram_key)).fetch()
-            print anagram
             if anagram != None:
-                search_result = anagram
+                if len(anagram) > 0:
+                    search_result = anagram[0].wordList
 
         # when upload button is clicked, read file and populate user dictionary
         if self.request.get('button') == 'Upload':
@@ -74,6 +73,7 @@ class MainPage(webapp2.RequestHandler):
                 print file.readline()
                 for x in file:
                     if x != None:
+                        x = x.strip('\n')
                         isAlreadyThere = add_to_database(x.upper())
                 file.close()
                 self.response.out.write('''<script>alert('Upload wordlist to database complete');</script>''')
@@ -92,4 +92,4 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(main_template.render(template_values))
 
 
-app = webapp2.WSGIApplication([('/', MainPage), ('/add', AddWord)], debug=True)
+app = webapp2.WSGIApplication([('/', MainPage), ('/add', AddWord), ('/subAnagram', SubAnagram)], debug=True)

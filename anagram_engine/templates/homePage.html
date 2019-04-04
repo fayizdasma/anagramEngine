@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link href="static/styles.css" rel="stylesheet" type="text/css">
     <title>Welcome to Anagram Engine</title>
 </head>
 <body>
@@ -48,7 +49,7 @@
         Select a wordlist file: <input accept=".txt" name="wordListFile" type="file"><br><br>
         <input name="button" type="submit" value="Upload">
     </form>
-
+    <h1>Sub-Anagram Query </h1><br/><a href="/subAnagram">here</a>
     {% else %}
     <p>Hello guest!</p>
     <p>Please <a href='{{ url }}'>{{ url_string }}</a> to continue</p>
