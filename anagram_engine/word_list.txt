@@ -9,3 +9,10 @@ listen
 silent
 age
 rage
+ten
+real
+net
+nite
+lent
+enlist
+rise

@@ -48,6 +48,7 @@ class SubAnagram(webapp2.RequestHandler):
                         # print '------sub-------'
                         # print s_anagram[0].wordList
                         sub_anagram_result.append(s_anagram[0].wordList[0])
+            del sub_list[:]
 
         template_values = {
             'search_result': search_result,
