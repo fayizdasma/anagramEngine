@@ -32,7 +32,7 @@ class SubAnagram(webapp2.RequestHandler):
 
             # query for anagram
             anagram_key = ndb.Key(WordModel, sortedWord + ',' + userEmail)
-            anagram = searchForAnagram(anagram_key)
+            anagram = WordModel.query(WordModel.key == anagram_key).fetch()
             if anagram != None:
                 if len(anagram) > 0:
                     search_result = anagram[0].wordList
@@ -72,11 +72,3 @@ def generateSubAnagram(wrd):
             if sorted not in sub_list:
                 sub_list.append(sorted)
             generateSubAnagram(word)
-
-
-def searchForAnagram(anagram_key):
-    query = WordModel.query()
-    query = query.filter(WordModel.userId == users.get_current_user().email())
-    query = query.filter(WordModel.key == anagram_key)
-    anagram = query.fetch()
-    return anagram

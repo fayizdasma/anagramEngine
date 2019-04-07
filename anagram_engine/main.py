@@ -76,7 +76,7 @@ class MainPage(webapp2.RequestHandler):
                 for x in file:
                     if x != None:
                         x = x.rstrip()
-                        isAlreadyThere = add_to_database(x.upper())
+                        add_to_database(x.upper())
                 file.close()
                 self.response.out.write('''<script>alert('Upload wordlist to database complete');</script>''')
 

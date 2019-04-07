@@ -1,4 +1,10 @@
-.button{
-background-color: red;
-color: red;
+p {
+    font-family: "Times New Roman", Times, serif;
+}
+
+p.normal {
+    font-style: normal;
+}
+h1{
+    font-size: 40px;
 }
